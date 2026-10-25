@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Una cosa más...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg: #faf7f2;
+      --card-bg: #ffffff;
+      --text-main: #2b2b2b;
+      --text-muted: #6e6b66;
+      --accent: #2e5c4d;
+      --accent-soft: #e8f0ec;
+      --border: #ede8e1;
+      --shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 16px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 32px 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Steps visibility */
+    .step {
+      display: none;
+      animation: fadeIn 0.45s ease-out forwards;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 18px;
+    }
+
+    h1, h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-main);
+      margin-bottom: 14px;
+    }
+
+    p.lead {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* Reasons List */
+    .reasons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .reason-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      transition: transform 0.2s ease;
+    }
+
+    .reason-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .reason-content h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .reason-content p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(46, 92, 77, 0.25);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      background: #24493d;
+    }
+
+    /* Decision Area */
+    .decision-area {
+      position: relative;
+      margin-top: 10px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-yes {
+      background: var(--accent);
+      color: #ffffff;
+      z-index: 2;
+    }
+
+    .btn-no-container {
+      position: relative;
+      width: 100%;
+      height: 60px;
+    }
+
+    .btn-no {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #f0ece6;
+      color: #7d7770;
+      transition: all 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      z-index: 10;
+      font-size: 0.92rem;
+    }
+
+    .btn-no.dodge {
+      position: fixed;
+      width: auto;
+      max-width: 85vw;
+      white-space: nowrap;
+      padding: 12px 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      border: 1px solid #dfd8cf;
+      background: #ffffff;
+      color: #4a453e;
+    }
+
+    /* Result Perks */
+    .perks-box {
+      background: var(--bg);
+      border: 1px dashed #d6cec3;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .perk-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .perk-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .check-icon {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .hint-text {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #9c9790;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+
+      <!-- PASO 1: Bienvenida suave -->
+      <div class="step active" id="step-1">
+        <div class="badge">Un mensaje breve</div>
+        <h1>Si llegaste hasta aquí...</h1>
+        <p class="lead">Gracias por tomarte el tiempo de leer la carta. Solo quería dejarte un par de detalles por aquí de forma tranquila.</p>
+        <button class="btn btn-primary" onclick="goToStep(2)">Continuar</button>
+      </div>
+
+      <!-- PASO 2: Las cosas que quedaron pendientes -->
+      <div class="step" id="step-2">
+        <div class="badge">Un par de cosas</div>
+        <h2>Lo que tenía en mente</h2>
+        
+        <div class="reasons-list">
+          <div class="reason-item">
+            <span class="reason-icon">🦉</span>
+            <div class="reason-content">
+              <h3>El salvavidas de Duolingo</h3>
+              <p>Investigué seriamente cómo automatizar Duolingo para salvarte la racha y que el búho verde no te quite a tu familia. Ese servicio viene incluido si seguimos hablando.</p>
+            </div>
+          </div>
+
+          <div class="reason-item">
+            <span class="reason-icon">🎮</span>
+            <div class="reason-content">
+              <h3>El Black Ops</h3>
+              <p>Como me contaste que jugabas Black Ops 2, conseguí el 1 para mostrártelo algún día si te da curiosidad.</p>
+            </div>
+          </div>
+
+          <div class="reason-item">
+            <span class="reason-icon">🎵</span>
+            <div class="reason-content">
+              <h3>La música y la plática</h3>
+              <p>Me quedé con muchas ganas de que me enseñes más de la música que escuchas... y bueno, si algún día se da la oportunidad, armar esa pedita tranquila escuchando a José José.</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="goToStep(3)">Siguiente</button>
+      </div>
+
+      <!-- PASO 3: La pregunta y los botones -->
+      <div class="step" id="step-3">
+        <div class="badge">Última pregunta</div>
+        <h2>¿Qué dices?</h2>
+        <p class="lead">¿Empezamos desde cero?</p>
+
+        <div class="decision-area" id="decisionContainer">
+          <button class="btn btn-yes" onclick="handleYes()">Sí, va</button>
+          
+          <div class="btn-no-container">
+            <button class="btn btn-no" id="btnNo" onclick="dodgeNo(event)">No</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 4: Pantalla Final de Éxito -->
+      <div class="step" id="step-4">
+        <div class="badge">Todo bien 🤝</div>
+        <h2>Felicidades</h2>
+        <p class="lead" style="margin-bottom: 18px;">Te acabas de ganar formalmente:</p>
+
+        <div class="perks-box">
+          <div class="perk-item">
+            <span class="check-icon">✓</span>
+            <span>Duolingo automatizado</span>
+          </div>
+          <div class="perk-item">
+            <span class="check-icon">✓</span>
+            <span>Ver el Black Ops 1</span>
+          </div>
+        </div>
+
+        <!-- Enlace a WhatsApp -->
+        <a href="https://wa.me/529518826439" id="waLink" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Mandar mensaje por WhatsApp
+        </a>
+
+        <p class="hint-text">El chat se abrirá en blanco para que escribas lo que quieras.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Navegación entre pasos
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      const nextStep = document.getElementById(`step-${stepNumber}`);
+      if (nextStep) {
+        nextStep.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // Frases del botón "No"
+    const noPhrases = [
+      "¿Segura?",
+      "Ni el búho de Duolingo es tan rencoroso...",
+      "Ese botón tiene lag, mejor pícale al otro.",
+      "Piénsalo bien...",
+      "Intento fallido 🏃‍♂️",
+      "Te estás perdiendo el Duolingo..."
+    ];
+
+    let noCount = 0;
+    const btnNo = document.getElementById('btnNo');
+
+    // Función para mover el botón en pantallas táctiles y escritorio
+    function dodgeNo(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      noCount++;
+      btnNo.classList.add('dodge');
+
+      // Cambiar texto
+      const phraseIndex = (noCount - 1) % noPhrases.length;
+      btnNo.innerText = noPhrases[phraseIndex];
+
+      // Calcular límites seguros dentro de la ventana del móvil
+      const padding = 24;
+      const btnWidth = btnNo.offsetWidth || 180;
+      const btnHeight = btnNo.offsetHeight || 50;
+      
+      const maxX = window.innerWidth - btnWidth - padding;
+      const maxY = window.innerHeight - btnHeight - padding;
+
+      const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+      btnNo.style.left = `${randomX}px`;
+      btnNo.style.top = `${randomY}px`;
+    }
+
+    // Esquivar también al pasar el mouse por encima (escritorio)
+    btnNo.addEventListener('mouseenter', dodgeNo);
+
+    // Esquivar al primer toque táctil antes de clickear
+    btnNo.addEventListener('touchstart', function(e) {
+      dodgeNo(e);
+    }, { passive: false });
+
+    // Cuando presiona SÍ
+    function handleYes() {
+      goToStep(4);
+
+      // Lanzar confeti suave y estético
+      try {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.65 },
+          colors: ['#2e5c4d', '#a3c2b4', '#e8c99b', '#f4ede2']
+        });
+      } catch (err) {
+        // En caso de que no cargue la librería, continúa sin error
+      }
+    }
+  </script>
+</body>
+</html>
