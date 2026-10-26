@@ -55,7 +55,62 @@
       padding: 32px 24px;
       box-shadow: var(--shadow);
       position: relative;
-      overflow: hidden;
+    }
+
+    /* Decision Area */
+    .decision-area {
+      position: relative;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-yes {
+      background: var(--accent);
+      color: #ffffff;
+      z-index: 2;
+    }
+
+    .btn-no-container {
+      position: relative;
+      width: 100%;
+      min-height: 150px;
+      margin-top: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .btn-no {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      min-width: 130px;
+      max-width: 92%;
+      background: #f0ece6;
+      color: #615a51;
+      padding: 12px 20px;
+      border-radius: 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+      text-align: center;
+      transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      z-index: 10;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      border: 1px solid #dfd8cf;
+    }
+
+    .btn-no.dodge {
+      background: #ffffff;
+      color: #3d3933;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      border: 1px solid #d5cec4;
     }
 
     /* Barra de progreso interactiva */
@@ -280,53 +335,6 @@
       display: block;
       width: 100%;
       text-align: center;
-    }
-
-    /* Decision Area */
-    .decision-area {
-      position: relative;
-      margin-top: 10px;
-      min-height: 190px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      overflow: visible;
-    }
-
-    .btn-yes {
-      background: var(--accent);
-      color: #ffffff;
-      z-index: 2;
-    }
-
-    .btn-no-container {
-      position: relative;
-      width: 100%;
-      height: 60px;
-    }
-
-    .btn-no {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #f0ece6;
-      color: #7d7770;
-      transition: all 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
-      z-index: 10;
-      font-size: 0.92rem;
-    }
-
-    .btn-no.dodge {
-      position: absolute;
-      width: auto;
-      max-width: 90%;
-      white-space: nowrap;
-      padding: 12px 18px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-      border: 1px solid #dfd8cf;
-      background: #ffffff;
-      color: #4a453e;
     }
 
     /* Boxes */
@@ -576,9 +584,9 @@
 
     let noCount = 0;
     const btnNo = document.getElementById('btnNo');
-    const decisionArea = document.getElementById('decisionContainer');
+    const noZone = document.getElementById('noZone');
 
-    // Función para mover el botón dentro de un límite visible
+    // Función para mover el botón dentro de un límite visible y seguro
     function dodgeNo(e) {
       if (e) {
         e.preventDefault();
@@ -599,19 +607,19 @@
       const phraseIndex = (noCount - 1) % noPhrases.length;
       btnNo.innerText = noPhrases[phraseIndex];
 
-      // Limitar el movimiento para que no se salga de la vista ni de la tarjeta
-      const areaWidth = decisionArea.clientWidth;
-      const areaHeight = 170;
-      const btnWidth = btnNo.offsetWidth || 160;
-      const btnHeight = btnNo.offsetHeight || 44;
+      // Límites garantizados dentro de la zona designada (noZone)
+      const zoneW = noZone.clientWidth;
+      const zoneH = noZone.clientHeight || 150;
+      const btnW = btnNo.offsetWidth || 150;
+      const btnH = btnNo.offsetHeight || 44;
 
-      const maxX = Math.max(0, areaWidth - btnWidth);
-      const maxY = Math.max(0, areaHeight - btnHeight);
+      const maxX = Math.max(0, zoneW - btnW);
+      const maxY = Math.max(0, zoneH - btnH);
 
-      // Posición relativa dentro del área de decisión
       const randomX = Math.floor(Math.random() * (maxX + 1));
-      const randomY = 65 + Math.floor(Math.random() * (maxY + 1)); // después del botón sí
+      const randomY = Math.floor(Math.random() * (maxY + 1));
 
+      btnNo.style.transform = 'none';
       btnNo.style.left = `${randomX}px`;
       btnNo.style.top = `${randomY}px`;
     }
@@ -646,8 +654,9 @@
       noCount = 0;
       btnNo.classList.remove('dodge');
       btnNo.innerText = 'No';
-      btnNo.style.left = '0';
-      btnNo.style.top = '0';
+      btnNo.style.left = '50%';
+      btnNo.style.top = '10px';
+      btnNo.style.transform = 'translateX(-50%)';
       goToStep(4);
     }
   </script>
