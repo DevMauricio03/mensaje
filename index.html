@@ -6,18 +6,19 @@
   <title>Una cosa más...</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Impact&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
-      --bg: #faf7f2;
-      --card-bg: #ffffff;
-      --text-main: #2b2b2b;
-      --text-muted: #6e6b66;
+      --bg: #f9f6f0;
+      --card-bg: rgba(255, 255, 255, 0.92);
+      --text-main: #2b2825;
+      --text-muted: #6b6660;
       --accent: #2e5c4d;
-      --accent-soft: #e8f0ec;
-      --border: #ede8e1;
-      --shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.07);
+      --accent-soft: #eaf1ed;
+      --accent-hover: #23483c;
+      --border: #ece6dc;
+      --shadow: 0 16px 40px -12px rgba(40, 35, 25, 0.08);
     }
 
     * {
@@ -37,8 +38,50 @@
       align-items: center;
       padding: 24px 16px;
       overflow-x: hidden;
-      background-image: radial-gradient(#ebe5dc 1px, transparent 1px);
-      background-size: 20px 20px;
+      position: relative;
+    }
+
+    /* Esferas ambientales de luz flotante */
+    .ambient-sphere {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(70px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.65;
+      animation: floatAround 14s infinite alternate ease-in-out;
+    }
+
+    .sphere-1 {
+      width: 260px;
+      height: 260px;
+      background: #e2ede7;
+      top: 5%;
+      left: -40px;
+    }
+
+    .sphere-2 {
+      width: 280px;
+      height: 280px;
+      background: #faeae0;
+      bottom: 8%;
+      right: -50px;
+      animation-delay: -5s;
+    }
+
+    .sphere-3 {
+      width: 200px;
+      height: 200px;
+      background: #fdf5e2;
+      top: 45%;
+      left: 60%;
+      animation-delay: -9s;
+    }
+
+    @keyframes floatAround {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25px, 35px) scale(1.08); }
+      100% { transform: translate(-20px, -20px) scale(0.95); }
     }
 
     .container {
@@ -46,18 +89,316 @@
       max-width: 440px;
       margin: 0 auto;
       position: relative;
+      z-index: 1;
     }
 
     .card {
       background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border);
-      border-radius: 30px;
-      padding: 32px 24px;
+      border-radius: 32px;
+      padding: 30px 24px;
       box-shadow: var(--shadow);
       position: relative;
     }
 
-    /* Decision Area */
+    /* Navegación y progreso */
+    .nav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .btn-back-header {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: color 0.2s ease;
+      visibility: hidden;
+    }
+
+    .btn-back-header.visible {
+      visibility: visible;
+    }
+
+    .btn-back-header:hover {
+      color: var(--text-main);
+    }
+
+    .progress-bar {
+      flex: 1;
+      display: flex;
+      gap: 6px;
+    }
+
+    .progress-dot {
+      flex: 1;
+      height: 4px;
+      background: #e9e3d8;
+      border-radius: 4px;
+      transition: all 0.35s ease;
+    }
+
+    .progress-dot.active {
+      background: var(--accent);
+      transform: scaleY(1.2);
+    }
+
+    /* Pasos */
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: gentleFadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes gentleFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin-bottom: 14px;
+    }
+
+    h1, h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    p.lead {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* Tarjetas Interactivas con Micro-interacciones */
+    .reasons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .reason-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+    }
+
+    .reason-item:active {
+      transform: scale(0.98);
+      background: #faf8f5;
+    }
+
+    .reason-item.no-img {
+      padding: 16px 18px;
+      align-items: flex-start;
+    }
+
+    .reason-thumb {
+      width: 62px;
+      height: 62px;
+      border-radius: 15px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .reason-content {
+      flex: 1;
+    }
+
+    .reason-content h3 {
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+      color: var(--text-main);
+    }
+
+    .reason-content p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.42;
+    }
+
+    /* Globito flotante de interacción */
+    .card-toast {
+      position: absolute;
+      top: -10px;
+      right: 14px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(46, 92, 77, 0.3);
+      opacity: 0;
+      transform: translateY(4px) scale(0.85);
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .card-toast.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Animación de notas musicales */
+    .note-bubble {
+      position: absolute;
+      font-size: 1.1rem;
+      pointer-events: none;
+      animation: floatNote 1.2s ease-out forwards;
+      z-index: 10;
+    }
+
+    @keyframes floatNote {
+      0% { opacity: 1; transform: translateY(0) scale(0.8) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(-38px) scale(1.3) rotate(15deg); }
+    }
+
+    /* Don Ramón Estilo Polaroid / Cromo */
+    .polaroid-card {
+      background: #ffffff;
+      padding: 12px 12px 18px 12px;
+      border-radius: 24px;
+      box-shadow: 0 10px 28px -6px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .polaroid-card:hover {
+      transform: rotate(-0.5deg);
+    }
+
+    .polaroid-img-wrapper {
+      width: 100%;
+      height: 230px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f2eee8;
+    }
+
+    .polaroid-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .polaroid-caption {
+      margin-top: 14px;
+      padding: 0 8px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.45;
+      text-align: center;
+      color: var(--text-main);
+    }
+
+    /* Botones */
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 18px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all 0.22s cubic-bezier(0.2, 0.8, 0.3, 1);
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(46, 92, 77, 0.22);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      background: var(--accent-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid #d4cdc3;
+      margin-top: 10px;
+    }
+
+    .btn-outline:active {
+      background: #f0ece6;
+    }
+
+    .btn-text {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      margin-top: 14px;
+      cursor: pointer;
+      padding: 8px;
+      text-decoration: underline;
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Área de decisión y botón esquivo */
     .decision-area {
       position: relative;
       margin-top: 10px;
@@ -91,7 +432,7 @@
       min-width: 130px;
       max-width: 92%;
       background: #f0ece6;
-      color: #615a51;
+      color: #5d574f;
       padding: 12px 20px;
       border-radius: 18px;
       font-size: 0.88rem;
@@ -100,7 +441,7 @@
       white-space: normal;
       word-break: break-word;
       text-align: center;
-      transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); /* Rebote suave elástico */
       z-index: 10;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
       border: 1px solid #dfd8cf;
@@ -113,230 +454,13 @@
       border: 1px solid #d5cec4;
     }
 
-    /* Barra de progreso interactiva */
-    .progress-bar {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 22px;
-    }
-
-    .progress-dot {
-      flex: 1;
-      height: 4px;
-      background: #eee8df;
-      border-radius: 4px;
-      transition: background 0.4s ease, transform 0.3s ease;
-    }
-
-    .progress-dot.active {
-      background: var(--accent);
-      transform: scaleY(1.2);
-    }
-
-    /* Pasos y animación */
-    .step {
-      display: none;
-    }
-
-    .step.active {
-      display: block;
-      animation: slideIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(14px) scale(0.99);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 6px 14px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      border-radius: 100px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      margin-bottom: 16px;
-    }
-
-    h1, h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 1.75rem;
-      font-weight: 600;
-      line-height: 1.35;
-      color: var(--text-main);
-      margin-bottom: 14px;
-    }
-
-    p.lead {
-      color: var(--text-muted);
-      font-size: 0.98rem;
-      line-height: 1.6;
-      margin-bottom: 26px;
-    }
-
-    /* Reasons List */
-    .reasons-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .reason-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 14px 16px;
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      transition: all 0.25s ease;
-      cursor: pointer;
-    }
-
-    .reason-item:hover, .reason-item:active {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      border-color: #ded7cc;
-    }
-
-    .reason-item.no-img {
-      padding: 16px 18px;
-      align-items: flex-start;
-    }
-
-    .reason-thumb {
-      width: 62px;
-      height: 62px;
-      border-radius: 15px;
-      object-fit: cover;
-      flex-shrink: 0;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--border);
-      transition: transform 0.25s ease;
-    }
-
-    .reason-item:active .reason-thumb {
-      transform: scale(1.08) rotate(-2deg);
-    }
-
-    .reason-content {
-      flex: 1;
-    }
-
-    .reason-content h3 {
-      font-size: 0.94rem;
-      font-weight: 700;
-      margin-bottom: 3px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .reason-content p {
-      font-size: 0.86rem;
-      color: var(--text-muted);
-      line-height: 1.42;
-    }
-
-    /* Don Ramón Meme Card */
-    .meme-card {
-      border-radius: 24px;
-      overflow: hidden;
-      margin-bottom: 24px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    }
-
-    .meme-img {
-      width: 100%;
-      display: block;
-      max-height: 260px;
-      object-fit: cover;
-    }
-
-    .meme-quote {
-      padding: 16px 18px;
-      font-size: 0.96rem;
-      font-weight: 600;
-      color: var(--text-main);
-      text-align: center;
-      line-height: 1.45;
-      font-style: italic;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 16px 20px;
-      border-radius: 16px;
-      font-size: 0.98rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      border: none;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #ffffff;
-      box-shadow: 0 4px 14px rgba(46, 92, 77, 0.25);
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-      background: #24493d;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-main);
-      border: 1px solid #d4cdc3;
-      margin-top: 10px;
-    }
-
-    .btn-outline:active {
-      background: #f0ece6;
-    }
-
-    .btn-text {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.86rem;
-      margin-top: 14px;
-      cursor: pointer;
-      padding: 8px;
-      text-decoration: underline;
-      display: block;
-      width: 100%;
-      text-align: center;
-    }
-
-    /* Boxes */
+    /* Cajas de Resultado y Disculpa */
     .perks-box, .apology-box {
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       text-align: left;
     }
 
@@ -368,6 +492,14 @@
     .check-icon {
       color: var(--accent);
       font-weight: bold;
+      background: var(--accent-soft);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
     }
 
     .hint-text {
@@ -380,15 +512,25 @@
 </head>
 <body>
 
+  <!-- Esferas relajantes de fondo -->
+  <div class="ambient-sphere sphere-1"></div>
+  <div class="ambient-sphere sphere-2"></div>
+  <div class="ambient-sphere sphere-3"></div>
+
   <div class="container">
     <div class="card" id="mainCard">
 
-      <!-- Indicador sutil de progreso -->
-      <div class="progress-bar" id="progressBar">
-        <div class="progress-dot active" id="dot-1"></div>
-        <div class="progress-dot" id="dot-2"></div>
-        <div class="progress-dot" id="dot-3"></div>
-        <div class="progress-dot" id="dot-4"></div>
+      <!-- Cabecera interactiva con botón atrás y progreso -->
+      <div class="nav-header">
+        <button class="btn-back-header" id="btnBackHeader" onclick="goBack()">
+          ← Atrás
+        </button>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-dot active" id="dot-1"></div>
+          <div class="progress-dot" id="dot-2"></div>
+          <div class="progress-dot" id="dot-3"></div>
+          <div class="progress-dot" id="dot-4"></div>
+        </div>
       </div>
 
       <!-- PASO 1: Bienvenida -->
@@ -399,15 +541,16 @@
         <button class="btn btn-primary" onclick="goToStep(2)">Continuar</button>
       </div>
 
-      <!-- PASO 2: Las cosas pendientes -->
+      <!-- PASO 2: Las cosas pendientes con micro-interacciones -->
       <div class="step" id="step-2">
         <div class="badge">Lo pendiente</div>
         <h2>Lo que tenía en mente</h2>
         
         <div class="reasons-list">
           <!-- Duolingo -->
-          <div class="reason-item">
-            <img src="img/duolingo.jpg" class="reason-thumb" alt="Duolingo">
+          <div class="reason-item" onclick="triggerCardInteraction(this, 'duo')">
+            <span class="card-toast" id="toast-duo">🦉 Racha salvada</span>
+            <img src="img/duolingo.jpg" class="reason-thumb" id="thumb-duo" alt="Duolingo">
             <div class="reason-content">
               <h3>El salvavidas de Duolingo</h3>
               <p>Investigué seriamente cómo automatizar Duolingo para salvarte la racha y que el búho verde no te quite a tu familia. Ese servicio viene incluido si seguimos hablando.</p>
@@ -415,8 +558,9 @@
           </div>
 
           <!-- Mario Kart / Yoshi Negro -->
-          <div class="reason-item">
-            <img src="img/yoshinegro.webp" class="reason-thumb" alt="Yoshi Negro">
+          <div class="reason-item" onclick="triggerCardInteraction(this, 'yoshi')">
+            <span class="card-toast" id="toast-yoshi">⭐ 1er lugar asegurado</span>
+            <img src="img/yoshinegro.webp" class="reason-thumb" id="thumb-yoshi" alt="Yoshi Negro">
             <div class="reason-content">
               <h3>El coaching de Mario Kart</h3>
               <p>Podría seguir enseñándote a jugar Mario Kart para que siempre ganes usando a Yoshi negro.</p>
@@ -424,16 +568,18 @@
           </div>
 
           <!-- Black Ops -->
-          <div class="reason-item">
-            <img src="img/blackops.jpg" class="reason-thumb" alt="Call of Duty Black Ops">
+          <div class="reason-item" onclick="triggerCardInteraction(this, 'cod')">
+            <span class="card-toast" id="toast-cod">🎯 Retas listas</span>
+            <img src="img/blackops.jpg" class="reason-thumb" id="thumb-cod" alt="Call of Duty Black Ops">
             <div class="reason-content">
               <h3>El Black Ops</h3>
               <p>Como me contaste que jugabas Black Ops 2, conseguí el 1 para mostrártelo algún día si te da curiosidad.</p>
             </div>
           </div>
 
-          <!-- Música sin imagen -->
-          <div class="reason-item no-img">
+          <!-- Música sin imagen (con notas flotantes al tocar) -->
+          <div class="reason-item no-img" onclick="triggerMusicInteraction(this, event)">
+            <span class="card-toast" id="toast-music">🎷 Modo José José</span>
             <div class="reason-content">
               <h3>La música y la plática</h3>
               <p>Me quedé con muchas ganas de que me enseñes más de la música que escuchas... y bueno, si algún día se da la oportunidad, esa pedita escuchando a José José creo que si seria un plan muy chido para hacer jajaja.</p>
@@ -444,15 +590,17 @@
         <button class="btn btn-primary" onclick="goToStep(3)">Siguiente</button>
       </div>
 
-      <!-- PASO 3: Meme Don Ramón (La propuesta) -->
+      <!-- PASO 3: Meme Don Ramón Estilo Polaroid Limpio -->
       <div class="step" id="step-3">
         <div class="badge">Oferta especial 🤝</div>
         <h2>Una última propuesta</h2>
         <p class="lead" style="margin-bottom: 18px;">Para que veas que la negociación va en serio:</p>
 
-        <div class="meme-card">
-          <img src="img/donramon_clean.jpg" alt="Don Ramón" class="meme-img">
-          <div class="meme-quote">
+        <div class="polaroid-card">
+          <div class="polaroid-img-wrapper">
+            <img src="img/donramon_clean.jpg" alt="Don Ramón" class="polaroid-img">
+          </div>
+          <div class="polaroid-caption">
             "Es más; si aceptas que volvamos a hablar, yo te traigo uvas"
           </div>
         </div>
@@ -537,13 +685,25 @@
   </div>
 
   <script>
+    let currentStep = 1;
+
     // Navegación entre pasos
     function goToStep(stepNumber) {
+      currentStep = stepNumber;
       document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      
       const nextStep = document.getElementById(typeof stepNumber === 'number' ? `step-${stepNumber}` : stepNumber);
       if (nextStep) {
         nextStep.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Visibilidad del botón "Atrás"
+      const backBtn = document.getElementById('btnBackHeader');
+      if (typeof stepNumber === 'number' && stepNumber > 1 && stepNumber <= 4) {
+        backBtn.classList.add('visible');
+      } else {
+        backBtn.classList.remove('visible');
       }
 
       // Actualizar barra de progreso (solo para pasos 1 al 4)
@@ -558,6 +718,59 @@
             }
           }
         }
+      }
+    }
+
+    // Volver al paso anterior
+    function goBack() {
+      if (typeof currentStep === 'number' && currentStep > 1) {
+        goToStep(currentStep - 1);
+      }
+    }
+
+    // Micro-interacciones divertidas al tocar las tarjetas
+    function triggerCardInteraction(card, type) {
+      const toast = document.getElementById(`toast-${type}`);
+      const thumb = document.getElementById(`thumb-${type}`);
+
+      if (thumb) {
+        thumb.style.transform = 'scale(1.15) rotate(-3deg)';
+        setTimeout(() => {
+          thumb.style.transform = 'scale(1) rotate(0deg)';
+        }, 300);
+      }
+
+      if (toast) {
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 1600);
+      }
+    }
+
+    // Notas musicales flotantes al tocar la tarjeta de José José
+    function triggerMusicInteraction(card, event) {
+      triggerCardInteraction(card, 'music');
+
+      const notes = ['🎵', '🎶', '🎷', '✨'];
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          const note = document.createElement('span');
+          note.className = 'note-bubble';
+          note.innerText = notes[Math.floor(Math.random() * notes.length)];
+          
+          const rect = card.getBoundingClientRect();
+          const randomOffsetX = Math.random() * (rect.width - 40);
+          
+          note.style.left = `${randomOffsetX}px`;
+          note.style.top = `10px`;
+          
+          card.appendChild(note);
+
+          setTimeout(() => {
+            note.remove();
+          }, 1200);
+        }, i * 150);
       }
     }
 
@@ -579,7 +792,7 @@
     const btnNo = document.getElementById('btnNo');
     const noZone = document.getElementById('noZone');
 
-    // Función para mover el botón dentro de un límite visible y seguro
+    // Función para mover el botón dentro de un límite visible y seguro con rebote
     function dodgeNo(e) {
       if (e) {
         e.preventDefault();
@@ -632,8 +845,8 @@
       // Lanzar confeti suave y estético
       try {
         confetti({
-          particleCount: 80,
-          spread: 65,
+          particleCount: 85,
+          spread: 70,
           origin: { y: 0.65 },
           colors: ['#2e5c4d', '#a3c2b4', '#e8c99b', '#f4ede2']
         });
