@@ -249,39 +249,32 @@
     }
 
     /* Don Ramón Meme Card */
-    .meme-wrapper {
-      position: relative;
-      border-radius: 22px;
+    .meme-card {
+      border-radius: 24px;
       overflow: hidden;
       margin-bottom: 24px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
       border: 1px solid var(--border);
-      background: #000;
+      background: var(--bg);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     }
 
     .meme-img {
       width: 100%;
       display: block;
-      max-height: 250px;
+      max-height: 260px;
       object-fit: cover;
     }
 
-    .meme-subtitle {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
-      background: rgba(0, 0, 0, 0.82);
-      color: #ffffff;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 0.88rem;
+    .meme-quote {
+      padding: 16px 18px;
+      font-size: 0.96rem;
       font-weight: 600;
-      line-height: 1.35;
+      color: var(--text-main);
       text-align: center;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      letter-spacing: 0.2px;
+      line-height: 1.45;
+      font-style: italic;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
     }
 
     /* Buttons */
@@ -457,10 +450,10 @@
         <h2>Una última propuesta</h2>
         <p class="lead" style="margin-bottom: 18px;">Para que veas que la negociación va en serio:</p>
 
-        <div class="meme-wrapper">
-          <img src="img/donramon.jpg" alt="Meme Don Ramón" class="meme-img">
-          <div class="meme-subtitle">
-            "Es más; si aceptas que volvamos a hablar, yo te traigo uvas o fresas seguido jjskjsksj"
+        <div class="meme-card">
+          <img src="img/donramon.jpg" alt="Don Ramón" class="meme-img">
+          <div class="meme-quote">
+            "Es más; si aceptas que volvamos a hablar, yo te traigo uvas"
           </div>
         </div>
 
@@ -503,7 +496,7 @@
           </div>
           <div class="perk-item">
             <span class="check-icon">✓</span>
-            <span>Suministro de uvas o fresas</span>
+            <span>Suministro de uvas</span>
           </div>
         </div>
 
@@ -573,7 +566,7 @@
       "¿Segura?",
       "Ni el búho de Duolingo es tan rencoroso...",
       "Ese botón tiene lag, mejor pícale al otro.",
-      "¿Ni por las uvas o fresas?",
+      "¿Ni por las uvas?",
       "¿Ni por ganar con Yoshi negro?",
       "Piénsalo bien...",
       "Ese botón no colabora...",
